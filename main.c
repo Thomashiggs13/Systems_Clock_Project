@@ -1,40 +1,88 @@
-/* --COPYRIGHT--,BSD
- * Copyright (c) 2017, Texas Instruments Incorporated
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * *  Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * *  Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * *  Neither the name of Texas Instruments Incorporated nor the names of
- *    its contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * --/COPYRIGHT--*/
-#include "driverlib.h"
-//******************************************************************************
-//!
-//!   Empty Project that includes driverlib
-//!
-//******************************************************************************
-void main (void)
+#include <msp430.h>
+#include "lcd.h"
+
+// Test time values for LCD display
+volatile unsigned char testSeconds = 0;
+volatile unsigned char testMinutes = 0;
+volatile unsigned char testHours = 0;
+
+// Forward declaration
+void update_test_display(void);
+
+// Test action - increment test hours (0-23)
+void increment_hours(void)
 {
+    testHours++;
+    if(testHours >= 24) testHours = 0;
+    update_test_display();
+}
+
+// Test action - increment test minutes (0-59)
+void increment_minutes(void)
+{
+    testMinutes++;
+    if(testMinutes >= 60) testMinutes = 0;
+    update_test_display();
+}
+
+// Update the LCD display with test values
+void update_test_display(void)
+{
+    LCDMEM[LCD_POS1] = LCD_GetDigit(testHours / 10);
+    LCDMEM[LCD_POS2] = LCD_GetDigit(testHours % 10);
+    LCDMEM[LCD_POS3] = LCD_GetDigit(testMinutes / 10);
+    LCDMEM[LCD_POS4] = LCD_GetDigit(testMinutes % 10);
+    LCDMEM[LCD_POS5] = LCD_GetDigit(testSeconds / 10);
+    LCDMEM[LCD_POS6] = LCD_GetDigit(testSeconds % 10);
+    LCDMEM[7]  = 0x04;  // Colon separator
+    LCDMEM[11] = 0x04;  // Colon separator
+}
+
+// Main entry point - LCD test
+int main(void)
+{
+    // Stop watchdog timer
+    WDTCTL = WDTPW | WDTHOLD;
+    
+    // Initialize LCD controller
+    LCD_Init();
+    
+    // Set initial test time: 12:34:56
+    testHours = 12;
+    testMinutes = 34;
+    testSeconds = 56;
+    
+    // Display the initial time on LCD
+    update_test_display();
+    
+    // Enable global interrupts
+    __enable_interrupt();
+    
+    // Main loop - simple test cycling through times
+    volatile unsigned int testCounter = 0;
+    
+    while(1)
+    {
+        // Test: increment seconds every ~1 second (just for visual testing)
+        testCounter++;
+        if(testCounter > 20000)
+        {
+            testCounter = 0;
+            testSeconds++;
+            if(testSeconds >= 60)
+            {
+                testSeconds = 0;
+                testMinutes++;
+                if(testMinutes >= 60)
+                {
+                    testMinutes = 0;
+                    testHours++;
+                    if(testHours >= 24) testHours = 0;
+                }
+            }
+            update_test_display();
+        }
+        
+        __no_operation();
+    }
 }
