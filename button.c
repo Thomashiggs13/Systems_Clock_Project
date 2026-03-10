@@ -17,9 +17,9 @@ void Button_Init(void)
     P2OUT |= RESET_BUTTON;
 }
 
-void Button_Handler(unsigned char curr, unsigned char *last, int index, void (*action)(void))
+void Button_Handler(unsigned char curr, unsigned char *last, int index, void (*action)(void))   //Action is a function pointer to the action to execute on button press
 {
-    if(curr && !(*last)) {
+    if(curr && !(*last)) {      
         btnTime[index] = 0;
         btnPressed[index] = 1;
     }
