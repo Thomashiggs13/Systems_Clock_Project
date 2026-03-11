@@ -28,6 +28,8 @@ int main(void)
     // Initialize GPIO - sets all ports to output
     GPIO_Init();
     
+    PM5CTL0 &= ~LOCKLPM5;  // Unlock GPIO pins from LPM5    
+
     // Configure test LEDs on P1.0 and P4.0
     P1DIR |= LED1;  // Set P1.0 as output
     P4DIR |= LED2;  // Set P4.0 as output
@@ -59,3 +61,15 @@ int main(void)
         __no_operation();
     }
 }
+
+// Timer_A0 ISR for button debounce timing
+extern volatile unsigned int btnTime[2];
+extern volatile unsigned char btnPressed[2];
+
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void Timer_A0_ISR(void)
+{
+    if(btnPressed[0]) btnTime[0]++;
+    if(btnPressed[1]) btnTime[1]++;
+}
+
