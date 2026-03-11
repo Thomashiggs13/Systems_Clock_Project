@@ -1,63 +1,66 @@
 #include <msp430.h>
 #include "gpio.h"
+#include "lcd.h"
+#include "rtc.h"
 #include "button.h"
+#include "time.h"
 
-// Test LED pins (P1.0 and P4.0)
-#define LED1 BIT0  // P1.0 - toggles with START_STOP button
-#define LED2 BIT0  // P4.0 - toggles with RESET button
-
-// Test action functions
-void test_action_button1(void)
+// Button action functions
+void toggleRunning(void)
 {
-    // Toggle LED1 (P1.0) when START_STOP button is pressed
-    P1OUT ^= LED1;
+    extern volatile int running;
+    running ^= 1;
 }
 
-void test_action_button2(void)
+void resetTimer(void)
 {
-    // Toggle LED2 (P4.0) when RESET button is pressed
-    P4OUT ^= LED2;
+    Time_Reset();
 }
 
-// Main entry point - GPIO and Button test
+// Main entry point - Complete Clock System
 int main(void)
 {
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
     
-    // Initialize GPIO - sets all ports to output
+    // Initialize all subsystems
     GPIO_Init();
-    
-    PM5CTL0 &= ~LOCKLPM5;  // Unlock GPIO pins from LPM5    
-
-    // Configure test LEDs on P1.0 and P4.0
-    P1DIR |= LED1;  // Set P1.0 as output
-    P4DIR |= LED2;  // Set P4.0 as output
-    P1OUT &= ~LED1; // Turn off P1.0 LED
-    P4OUT &= ~LED2; // Turn off P4.0 LED
-    
-    // Initialize button input detection with Timer_A0 for debouncing
     Button_Init();
+    LCD_Init();
+    Time_Init();
+    RTC_Init();
     
-    // Enable Timer_A0 interrupt for button debouncing
-    TA0CCTL0 = CCIE;
-    TA0CCR0 = 1000 - 1;  // 1ms timer
-    TA0CTL = TASSEL__SMCLK | MC__UP | TACLR;
+    // Unlock GPIO pins from Low Power Mode 5
+    PM5CTL0 &= ~LOCKLPM5;
+    
+    // Update display with initial time
+    extern volatile unsigned char *Seconds;
+    extern volatile unsigned char *Minutes;
+    extern volatile unsigned char *Hours;
+    
+    LCDMEM[LCD_POS1] = LCD_GetDigit((*Hours)/10);
+    LCDMEM[LCD_POS2] = LCD_GetDigit((*Hours)%10);
+    LCDMEM[LCD_POS3] = LCD_GetDigit((*Minutes)/10);
+    LCDMEM[LCD_POS4] = LCD_GetDigit((*Minutes)%10);
+    LCDMEM[LCD_POS5] = LCD_GetDigit((*Seconds)/10);
+    LCDMEM[LCD_POS6] = LCD_GetDigit((*Seconds)%10);
+    LCDMEM[7]  = 0x04;  // Colon separator
+    LCDMEM[11] = 0x04;  // Colon separator
     
     // Enable global interrupts
     __enable_interrupt();
     
-    // Main loop - process button presses
+    // Start the timer
+    extern volatile int running;
+    running = 1;
+    
+    // Main loop - handle buttons and wait for interrupts
     unsigned char btnLast[2] = {0, 0};
     
     while(1)
     {
-        // Read button 1 (START_STOP on P1.2) and execute test_action_button1 on press
-        Button_Handler(!(P1IN & START_STOP_BUTTON), &btnLast[0], 0, test_action_button1);
-        
-        // Read button 2 (RESET on P2.6) and execute test_action_button2 on press
-        Button_Handler(!(P2IN & RESET_BUTTON), &btnLast[1], 1, test_action_button2);
-        
+        Button_Handler(!(P1IN & START_STOP_BUTTON), &btnLast[0], 0, toggleRunning);
+        Button_Handler(!(P2IN & RESET_BUTTON), &btnLast[1], 1, resetTimer);
         __no_operation();
     }
 }
@@ -72,4 +75,3 @@ __interrupt void Timer_A0_ISR(void)
     if(btnPressed[0]) btnTime[0]++;
     if(btnPressed[1]) btnTime[1]++;
 }
-
