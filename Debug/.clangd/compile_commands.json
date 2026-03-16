@@ -118,5 +118,30 @@
       "directory" : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2050/ccs/ccs_base/msp430/include\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/driverlib/MSP430FR2xx_4xx\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR4133__ -DDEPRECATED -xc",
       "file"      : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/main.c"
+   },
+   {
+      "directory" : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2050/ccs/ccs_base/msp430/include\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/driverlib/MSP430FR2xx_4xx\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR4133__ -DDEPRECATED -xc",
+      "file"      : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/button.c"
+   },
+   {
+      "directory" : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2050/ccs/ccs_base/msp430/include\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/driverlib/MSP430FR2xx_4xx\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR4133__ -DDEPRECATED -xc",
+      "file"      : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/gpio.c"
+   },
+   {
+      "directory" : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2050/ccs/ccs_base/msp430/include\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/driverlib/MSP430FR2xx_4xx\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR4133__ -DDEPRECATED -xc",
+      "file"      : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/lcd.c"
+   },
+   {
+      "directory" : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2050/ccs/ccs_base/msp430/include\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/driverlib/MSP430FR2xx_4xx\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR4133__ -DDEPRECATED -xc",
+      "file"      : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/rtc.c"
+   },
+   {
+      "directory" : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2050/ccs/ccs_base/msp430/include\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project\" -I\"C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/driverlib/MSP430FR2xx_4xx\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR4133__ -DDEPRECATED -xc",
+      "file"      : "C:/Users/th150187/workspace_ccstheia/Systems_Clock_Project/time.c"
    }
 ]
